@@ -24,6 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # The secret key is now loaded from the .env file
 SECRET_KEY = config('SECRET_KEY')
+OPEN_API = config('OPEN_API')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,9 +44,11 @@ INSTALLED_APPS = [
     'rest_framework',               # Django REST Framework
     'rest_framework.authtoken',     # Token Authentication
     'api',                          # Your custom app
+    'corsheaders',                  # Add corsheaders to installed apps
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Add CORS middleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -134,4 +137,21 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',  # Default to authenticated users
     ],
+}
+
+# CORS configuration
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Allow requests from the frontend
+]
+
+# Optional: Allow all origins (not recommended for production)
+# CORS_ALLOW_ALL_ORIGINS = True
+
+
+CACHES = {
+  "default": {
+    "BACKEND": "django_redis.cache.RedisCache",
+    "LOCATION": "redis://127.0.0.1:6379/1",
+    "OPTIONS": { "CLIENT_CLASS": "django_redis.client.DefaultClient" }
+  }
 }

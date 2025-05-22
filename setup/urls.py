@@ -20,6 +20,7 @@ from rest_framework.authtoken import views as drf_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),    
-    path('api-token-auth/', drf_views.obtain_auth_token),
+    path('api/', include('accounts.urls')),
+    path('api/', include('catalogs.urls')),
+    path('api-auth/', include('rest_framework.urls')),
 ]
