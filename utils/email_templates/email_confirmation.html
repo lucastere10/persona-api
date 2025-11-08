@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRO/P - Confirme seu email</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 8px; margin-top: 20px; margin-bottom: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #333; font-size: 28px; margin: 0;">DRO/P</h1>
+            <p style="color: #666; font-size: 16px; margin: 10px 0 0 0;">Bem-vindo! Confirme seu email</p>
+        </div>
+        
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin-bottom: 30px;">
+            <p style="margin: 0 0 15px 0; color: #333; font-size: 16px;">
+                Olá <strong>{{user_name}}</strong>! 👋
+            </p>
+            <p style="margin: 0; color: #333; font-size: 16px;">
+                Obrigado por se registrar no <strong>DRO/P</strong>. Para ativar sua conta, você precisa confirmar seu endereço de email.
+            </p>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{confirmation_url}}" target="_blank"
+               style="background-color: #28a745; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                ✅ Confirmar Email
+            </a>
+        </div>
+        
+        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 6px; margin: 20px 0;">
+            <p style="margin: 0; color: #856404; font-size: 14px;">
+                ⏰ <strong>Este link expira em 24 horas</strong><br>
+                Confirme seu email o quanto antes para ativar sua conta.
+            </p>
+        </div>
+        
+        <div style="margin: 30px 0;">
+            <p style="color: #666; font-size: 14px; margin-bottom: 10px;">
+                Se o botão não funcionar, copie e cole este link no seu navegador:
+            </p>
+            <p style="word-break: break-all; color: #007bff; background-color: #f8f9fa; padding: 10px; border-radius: 4px; font-size: 12px;">
+                {{confirmation_url}}
+            </p>
+        </div>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+        
+        <div style="text-align: center;">
+            <p style="color: #666; font-size: 12px; margin: 0;">
+                Este email foi enviado para <strong>{{email}}</strong><br>
+                Se você não criou esta conta, pode ignorar este email com segurança.
+            </p>
+            <p style="color: #999; font-size: 11px; margin: 15px 0 0 0;">
+                Este é um email automático, não responda a esta mensagem.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

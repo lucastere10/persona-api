@@ -1,0 +1,22 @@
+Confirme seu email - Persona API
+
+Bem-vindo ao Persona API!
+
+Olá {{user_name}}! 👋
+
+Obrigado por se registrar no Persona API. Para ativar sua conta, você precisa confirmar seu endereço de email acessando o link abaixo:
+
+✅ CONFIRMAR EMAIL: {{confirmation_url}}
+
+⏰ IMPORTANTE: Este link expira em 24 horas.
+Confirme seu email o quanto antes para ativar sua conta.
+
+Se o link não funcionar, copie e cole no seu navegador:
+{{confirmation_url}}
+
+---
+
+Este email foi enviado para {{email}}
+Se você não criou esta conta, pode ignorar este email com segurança.
+
+Este é um email automático, não responda a esta mensagem.
