@@ -1,0 +1,18 @@
+Seu link de acesso - Persona API
+
+Olá! Aqui está seu link de acesso rápido e seguro para o Persona API.
+
+🚀 ACESSAR AGORA: {{magic_link}}
+
+⚡ IMPORTANTE: Este link expira em {{valid_minutes}} minutos.
+Use este link rapidamente para sua segurança.
+
+Se o link não funcionar, copie e cole no seu navegador:
+{{magic_link}}
+
+---
+
+Este email foi enviado para {{email}}
+Se você não solicitou este acesso, pode ignorar este email com segurança.
+
+Este é um email automático, não responda a esta mensagem.

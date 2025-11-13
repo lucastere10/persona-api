@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from decouple import config
 from pathlib import Path
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,6 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # The secret key is now loaded from the .env file
 SECRET_KEY = config('SECRET_KEY')
+OPEN_API = config('OPEN_API')
+RESEND_API_KEY = config('RESEND_API_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,11 +44,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',               # Django REST Framework
-    'rest_framework.authtoken',     # Token Authentication
-    'api',                          # Your custom app
+    'rest_framework.authtoken',     # Token Authentication (mantido para compatibilidade)
+    'corsheaders',                  # Add corsheaders to installed apps
+    'social_django',                # Social authentication
+    'oauth2_provider',              # OAuth2 provider
+    'apps.users',                   # User management app
+    'apps.analysis',                # Analysis app
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Add CORS middleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -129,9 +137,111 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'apps.users.authentication.JWTAuthentication',  # Custom JWT Authentication
+        'rest_framework.authentication.TokenAuthentication',  # Fallback
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Default to authenticated users
+        'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+# CORS configuration
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Allow requests from the frontend
+    "http://localhost:3001",  # Allow requests from the frontend
+    "http://192.168.1.2:3000",  # Example IP address, replace with your frontend's IP
+]
+
+# Permite o seu header customizado
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'access-token',
+]
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+    }
+}
+
+# Redis cache configuration (commented out for development)
+# Uncomment when Redis is available
+# CACHES = {
+#   "default": {
+#     "BACKEND": "django_redis.cache.RedisCache",
+#     "LOCATION": "redis://127.0.0.1:6379/1",
+#     "OPTIONS": { "CLIENT_CLASS": "django_redis.client.DefaultClient" }
+#   }
+# }
+
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
+# For production, use SMTP:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+# EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+# EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='no-reply@caldasdev.store')
+
+# Frontend URL for password reset links
+DEFAULT_FRONTEND_URL = 'http://localhost:3000'
+FRONTEND_URL = config('FRONTEND_URL', default=DEFAULT_FRONTEND_URL)
+
+# Custom User Model
+AUTH_USER_MODEL = 'users.User'
+
+# Media files (for user avatars)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# JWT Configuration
+import datetime
+JWT_SECRET_KEY = config('JWT_SECRET_KEY', default=SECRET_KEY)
+JWT_ALGORITHM = 'HS256'
+JWT_ACCESS_TOKEN_LIFETIME = datetime.timedelta(hours=1)
+JWT_REFRESH_TOKEN_LIFETIME = datetime.timedelta(days=7)
+JWT_ISSUER = config('JWT_ISSUER', default='persona-api')
+JWT_AUDIENCE = config('JWT_AUDIENCE', default='persona-web')
+
+# Social Authentication
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.github.GithubOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# Google OAuth2 settings
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('GOOGLE_OAUTH2_KEY', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('GOOGLE_OAUTH2_SECRET', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile'
+]
+
+# GitHub OAuth2 settings
+SOCIAL_AUTH_GITHUB_KEY = config('GITHUB_KEY', default='')
+SOCIAL_AUTH_GITHUB_SECRET = config('GITHUB_SECRET', default='')
+SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
+
+# Social auth pipeline
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
+# Social auth settings
+SOCIAL_AUTH_USER_MODEL = 'users.User'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = DEFAULT_FRONTEND_URL + '/dashboard'
+SOCIAL_AUTH_LOGIN_ERROR_URL = DEFAULT_FRONTEND_URL + '/login?error=social_auth'
+
+# Magic Link settings
+MAGIC_LINK_TOKEN_LIFETIME = datetime.timedelta(minutes=15)  # Magic links expire in 15 minutes
